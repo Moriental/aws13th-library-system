@@ -30,10 +30,14 @@ class TargetBookIsBorrowed(BookError):
         self.target_book = target_book
         super().__init__(f"{target_book}은 현재 대출 중입니다.")
 
+class BookAlreadyExists(LibraryError):
+    def __init__(self,book):
+        self.book = book
 
 """
     멤버 관련 예외
 """
+
 class MemberError(LibraryError):
     pass
 
@@ -47,4 +51,8 @@ class MemberIsNeverBorrowed(MemberError):
         self.name = name
         super().__init__(f"{name}에 해당하는 멤버는 책을 빌린 기록이 없습니다.")
 
+class MemberAlreadyExists(MemberError):
+    def __init__(self,phone_number):
+        self.phone_number = phone_number
+        super().__init__(f"{phone_number}가 중복 됩니다.")
 

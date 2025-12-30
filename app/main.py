@@ -1,3 +1,5 @@
+from exceptions.CustomException import (TargetBookNotFound,MemberNotFoundError,MemberIsNeverBorrowed
+,BookAlreadyExists,MemberAlreadyExists)
 from repository.BookCsvRepository import BookCsvRepository
 from domain.Library import Library
 from domain.Member import Member
@@ -29,18 +31,23 @@ while True:
     number = int(input())
 
     if number == 1:
-        title,author,isbn = map(input("제목, 저자, isbn을 공백으로 구분하여 입력하세요: ").split())
-        new_book = Book(title,author,isbn)
-        LibraryService.add_book(new_book)
+        try:
+            title,author,isbn = map(input("제목, 저자, isbn을 공백으로 구분하여 입력하세요: ").split())
+            new_book = Book(title,author,isbn)
+            LibraryService.add_book(new_book)
+        except BookAlreadyExists:
+            print(f"{e}")
 
     if number == 2:
         LibraryService.show_book()
 
     if number == 3:
-        name,phone = map(input("이름과 폰 번호를 공백으로 구분하여 입력하세요:").split())
-        new_member = Member(name,phone,[])
-        LibraryService.add_member(new_member)
-
+        try:
+            name,phone = map(input("이름과 폰 번호를 공백으로 구분하여 입력하세요:").split())
+            new_member = Member(name,phone,[])
+            LibraryService.add_member(new_member)
+        except MemberAlreadyExists:
+            print(f"{e}")
         # 테스트 코드
         # for i in range(3):
         #     new_member = Member("kim", "010-2342-3453",[])
@@ -58,15 +65,25 @@ while True:
         LibraryService.borrow_book(borrow_member_name,borrow_isbn)
 
     if number == 6:
-        print("[반납 시스템]")
-        print("반납할 사용자 이름을 입력하세요: ")
-        return_member_name = input()
-        print("반납할 책의 ISBN을 입력하세요: ")
-        return_isbn = input()
-        LibraryService.return_book(return_member_name,return_isbn)
+        try:
+            print("[반납 시스템]")
+            print("반납할 사용자 이름을 입력하세요: ")
+            return_member_name = input()
+            print("반납할 책의 ISBN을 입력하세요: ")
+            return_isbn = input()
+            LibraryService.return_book(return_member_name,return_isbn)
+        except MemberNotFoundError as e:
+            print(f"{e}")
+        except MemberIsNeverBorrowed as e:
+            print(f"{e}")
 
     if number == 7:
-        print("6번")
+        try:
+            title = input("검색할 책의 제목을 입력하세요:")
+            isbn = input("검색할 isbn을 입력하세요: ")
+            LibraryService.search_book(title,isbn)
+        except TargetBookNotFound as e:
+            print(f"검색 실패 {e}")
 
     if number == 8:
         print("종료하겠습니다...")
