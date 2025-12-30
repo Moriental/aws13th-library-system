@@ -3,7 +3,7 @@ from .Member import Member # 상대 경로를 이용해 같은 폴더 내에 있
 """    
     Service Layer
 """
-class Library():
+class Library:
     """
         생성자 주입
         :param books: 초기 도서 목록 (주입받음)
@@ -22,6 +22,29 @@ class Library():
         #member.name (키) member (값)
         self.members[member.name] = member
 
+    #현재 저장되어 있는 책들을 보여주는 함수
+    def show_book(self):
+        if not self.books:
+            print("현재 등록된 책이 없습니다.")
+            return
+        for book in self.books:
+            print(book)
+
+    #현재 저장되어 있는 멤버들의 목록을 보여주는 함수
+    '''
+        items()는 key와 value만 반환함,
+        for name,phone,borrwoed_books.. (x)
+        위 처럼 쓰면 안됨
+        for name,member in self.members.items():
+            phone = member.phone (o)
+    '''
+    def show_member(self):
+        for name,member in self.members.items():
+            phone = member.phone
+            books_count = len(member.borrowed_books) # 현재 빌리고 있는 책의 개수
+
+            #
+            print(f"{name}님이 있으며 휴대폰 번호는 {phone}와 같으며 현재 빌리고 있는 책의 개수는 {books_count}개 입니다.")
     # 대출 비즈니스
     def borrow_book(self,member_name:str,isbn:str):
         member = self.members.get(member_name)
@@ -51,6 +74,7 @@ class Library():
         target_book.is_borrowed = True
         #member 객체에 대출한 책 추가
         member.borrowed_books.append(target_book)
+        print(f"{member.name}님이 {target_book.title} 책에 대출에 성공했습니다!!")
         return True
 
     def return_book(self,member_name:str,isbn:str):
