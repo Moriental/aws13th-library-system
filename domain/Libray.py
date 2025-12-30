@@ -23,7 +23,7 @@ class Library():
         self.members[member.name] = member
 
     # 대출 비즈니스
-    def borrow_book(self,member_name,isbn):
+    def borrow_book(self,member_name:str,isbn:str):
         member = self.members.get(member_name)
         # member를 찾을 수 없을 때 (member_name에 해당하는 객체가 없음)
         if not member:
@@ -53,5 +53,32 @@ class Library():
         member.borrowed_books.append(target_book)
         return True
 
-    def return_book(self):
+    def return_book(self,member_name:str,isbn:str):
+        member = self.members.get(member_name)
+        # 반납할 회원의 이름을 입력하세요
+        # 반납할 회원의 책의 번호를 입력하세요
+        if not member: # member가 none 이라면
+            print("존재하지 않는 회원입니다.")
+            return False
+
+        borrowed_book = None
+        for book in member.borrowed_books:
+            if book.isbn == isbn:
+                borrowed_book = book
+                break
+
+        #현재 책을 빌린 기록이 없을 경우
+        if not borrowed_book:
+            print("책을 빌린 기록이 없습니다.")
+            return False
+
+        #현재 책이 대출 중인지 확인한다.
+        if not borrowed_book.is_borrowed:
+            print("현재 책은 대출중이 아닙니다.")
+            return False
+
+        borrowed_book.is_borrowed = False
+        member.borrowed_books.remove(borrowed_book)
+        print(f"{member.name}님의 {borrowed_book.title}을 반납했습니다.")
         return True
+
