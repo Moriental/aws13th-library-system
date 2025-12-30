@@ -1,6 +1,7 @@
 from repository.BookCsvRepository import BookCsvRepository
 from domain.Library import Library
 from domain.Member import Member
+from domain.Book import Book
 
 #BookCsvRepository에 filePath 전달
 bookRepository = BookCsvRepository("../books.csv")
@@ -12,7 +13,7 @@ print("[System] books.csv 에서 도서 데이터를 불러왔습니다.")
 #Library에 가져온 book을 생성자 주입하기
 #Member를 주입하지 않는 이유는 어차피 불러올 Member가 없기 때문 (만약 MemberCsvRepository, MemberCsv가 생긴다면 주입해도 괜찮을듯)
 #나중에 MemberCsvRepository도 만들어 보자
-LibraryService = Library(book)
+LibraryService = Library(bookRepository,book)
 
 while True:
     print("=== 도서관 관리 시스템 ===")
@@ -28,17 +29,19 @@ while True:
     number = int(input())
 
     if number == 1:
-        LibraryService.add_book(book)
+        title,author,isbn = map(input("제목, 저자, isbn을 공백으로 구분하여 입력하세요: ").split())
+        new_book = Book(title,author,isbn)
+        LibraryService.add_book(new_book)
 
     if number == 2:
         LibraryService.show_book()
 
     if number == 3:
-        for i in range(3):
-            name = f"kim{i}"
-            new_member = Member(name,"010-2342-5446",[])
-            LibraryService.add_member(new_member)
+        name,phone = map(input("이름과 폰 번호를 공백으로 구분하여 입력하세요:").split())
+        new_member = Member(name,phone,[])
+        LibraryService.add_member(new_member)
 
+        # 테스트 코드
         # for i in range(3):
         #     new_member = Member("kim", "010-2342-3453",[])
         #     LibraryService.add_member(new_member)
