@@ -1,6 +1,6 @@
 import csv
 
-from domain.Book import Book
+from domain.book.Book import Book
 from exceptions.CustomException import FileExtensionNotFound
 
 
@@ -29,15 +29,9 @@ class BookCsvRepository:
             for row in reader:
                 # books 리스트에 append 할 때 각 행에 해당하는 데이터를 붙여 넣어줘야 함
                 books.append(Book(row[0], row[1], row[2]))
-
-            # 출력 되는지 테스트용
-            # for book in books:
-            #    print(book)
-            # return books
-
         return books
 
-    # 현재 메모리에 저장된 list[Book]에 데이터를 가져와 "w"로 새로운 books.csv를 만든다
+    # 현재 메모리에 저장된 list[book]에 데이터를 가져와 "w"로 새로운 books.csv를 만든다
     def save_book(self, books: list[Book]):
         '''
             'w'모드 이므로 매번 파일을 비우고 새로 쓴다.
@@ -66,7 +60,7 @@ if __name__ == "__main__":
         books = repo.load_all()
         print(f"추가 책 권수 {len(books)}")
     
-        new_book = Book("파이썬 마스터","영우","9781234567890")
+        new_book = book("파이썬 마스터","영우","9781234567890")
         books.append(new_book)
     
         repo.save_book(books)

@@ -34,6 +34,10 @@ class BookAlreadyExists(LibraryError):
     def __init__(self,book):
         self.book = book
 
+class BookIsAlreadyReturned(BookError):
+    def __init__(self,book):
+        self.book = book
+        super().__init__(f"{book}은 현재 대출 중이지 않습니다.")
 """
     멤버 관련 예외
 """
