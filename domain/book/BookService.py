@@ -29,18 +29,6 @@ class BookService:
         self.book_csv_repository.save_book(self.books)
         # member.name (키) member (값)
 
-    # #main.py에 7번 (search 함수 기능)
-    # def find_books_byTitleAndIsbn(self,search_book_title ,search_book_isbn):
-    #     find_book = None
-    #     for book in self.books:
-    #         # 만약 책의 이름을 잘못 치더라도 ISBN이 맞으면 조회 가능 (그 반대 경우도 가능)
-    #         if book.title == search_book_title or book.isbn == search_book_isbn:
-    #             find_book = book
-    #             return find_book
-    #     raise TargetBookNotFound(search_book_title)
-
-    #파이썬은 메서드 오버로딩 지원 x
-    #
     def find_books_byIsbn(self,search_book_isbn):
         find_book = None
         for book in self.books:
