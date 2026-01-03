@@ -10,17 +10,16 @@ from domain.book.Book import Book
 #BookCsvRepository에 filePath 전달
 bookRepository = BookCsvRepository("../books.csv")
 
-#현재 CSV에 저장되어 있는 데이터 가져오기
-book = bookRepository.load_all()
 print("[System] books.csv 에서 도서 데이터를 불러왔습니다.")
 
+#Member에 생성자를 주입하지 않는 이유는 어차피 불러올 Member가 없기 때문
+#(만약 MemberCsvRepository, MemberCsv가 생긴다면 주입해도 괜찮을듯)
+#나중에 MemberCsvRepository도 만들어 보자...
 bookService = BookService(bookRepository)
 memberService = MemberService({})
-libraryService = Library(memberService,bookService)
 
-#Library에 가져온 book을 생성자 주입하기
-#Member를 주입하지 않는 이유는 어차피 불러올 Member가 없기 때문 (만약 MemberCsvRepository, MemberCsv가 생긴다면 주입해도 괜찮을듯)
-#나중에 MemberCsvRepository도 만들어 보자
+#libraryService에 memberService,bookService 생성자 주입
+libraryService = Library(memberService,bookService)
 
 while True:
     print("=== 도서관 관리 시스템 ===")
@@ -33,7 +32,12 @@ while True:
     print("7. 검색")
     print("8. 종료")
     print("메뉴를 선택하세요: ")
-    number = int(input())
+
+    try:
+        number = int(input())
+    except ValueError as e:
+        print("올바른 숫자를 입력해주세요:")
+        continue
 
     if number == 1:
         try:
@@ -42,7 +46,7 @@ while True:
             isbn = input("ISBN을 입력하세요: ")
             new_book = Book(title,author,isbn)
             bookService.add_book(new_book)
-        except BookAlreadyExists:
+        except BookAlreadyExists as e:
             print(f"{e}")
 
     if number == 2:
@@ -70,6 +74,9 @@ while True:
             libraryService.borrow_book(borrow_member_name,borrow_isbn)
         except TargetBookIsBorrowed as e:
             print(f"{e}")
+        except TargetBookNotFound as e:
+            print(f"{e}")
+
     if number == 6:
         try:
             print("[반납 시스템]")
@@ -79,16 +86,16 @@ while True:
             return_isbn = input()
             libraryService.return_book(return_member_name,return_isbn)
         except MemberNotFoundError as e:
-            # 멤버를 찾지 못할 경우 멤버를 찾지 못했다는 익셉션 호출
             print(f"{e}")
-            # 멤버가 빌린적이 없는 경우 익셉션 호출
         except MemberIsNeverBorrowed as e:
+            print(f"{e}")
+        except TargetBookNotFound as e:
             print(f"{e}")
 
     if number == 7:
         try:
-            isbn = input("검색할 isbn을 입력하세요: ")
-            libraryService.search_book(isbn)
+            keyword = input("검색할 책의 제목을 입력하세요: ")
+            libraryService.search_book_by_title(keyword)
         except TargetBookNotFound as e:
             print(f"검색 실패 {e}")
 
